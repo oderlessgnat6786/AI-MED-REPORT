@@ -3,7 +3,7 @@
 .gradle/
 build/
 out/
-
+MISC/
 # Gradle wrapper (keep wrapper jar tracked if you want, adjust if needed)
 !gradle/wrapper/gradle-wrapper.jar
 
