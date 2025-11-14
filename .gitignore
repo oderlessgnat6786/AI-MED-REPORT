@@ -1,0 +1,75 @@
+# ...existing code...
+# Gradle
+.gradle/
+build/
+out/
+
+# Gradle wrapper (keep wrapper jar tracked if you want, adjust if needed)
+!gradle/wrapper/gradle-wrapper.jar
+
+# Compiled class files
+*.class
+
+# Packages
+*.jar
+*.war
+*.ear
+
+# Logs and reports
+*.log
+test-results/
+coverage/
+*.exec
+jacoco.exec
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.vscode/settings.json
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# NetBeans
+nbproject/private/
+
+# IntelliJ run configs / workspace files you don't want in VCS
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+
+# Local config / secrets / keys
+local.properties
+*.keystore
+*.jks
+*.p12
+*.pfx
+.env
+.env.* 
+secrets/
+*.pem
+
+# Misc
+*.class
+*.cache
+*.tmp
+*.swp
+.gradle/
+.gradle-cache/
+.build/
+
+# Keep this file consistent
+# ...existing code...
