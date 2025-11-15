@@ -61,7 +61,8 @@ local.properties
 .env.* 
 secrets/
 *.pem
-
+*.sh
+*.bat
 # Misc
 *.class
 *.cache
@@ -70,6 +71,7 @@ secrets/
 .gradle/
 .gradle-cache/
 .build/
+audios/
 
 # Keep this file consistent
 # ...existing code...
