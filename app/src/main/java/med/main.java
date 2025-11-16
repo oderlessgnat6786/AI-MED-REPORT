@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.http.HttpRequest;
+import java.nio.file.Path;
 //The main class to run the application and display the output logs and results
 public class Main {
 
@@ -45,10 +46,16 @@ public class Main {
         f.createNewFile();
         recorder.startRecording(f,rd);
 
-        System.out.println("Press enter to send audio");
+        System.out.println("Press enter to upload and send audio");
         rd.readLine();
-        var http = new HTTP_Request();
-        String id = http.call(f.getAbsolutePath(), "te", "https://api.assemblyai.com/v2/transcript");
+
+        Path path = Path.of(f.getAbsolutePath());
+
+        HTTP_Request http = new HTTP_Request();
+        String url = http.upload(path, "https://api.assemblyai.com/v2/upload");
+
+        
+        String id = http.call(url, "te", "https://api.assemblyai.com/v2/transcript");
 
         System.out.println("Press enter to get transcribed text");
         rd.readLine();

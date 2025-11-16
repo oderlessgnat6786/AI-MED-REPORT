@@ -1,6 +1,7 @@
 package med;
 // This class will handle HTTP requests for the application
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -8,14 +9,18 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.net.http.HttpResponse;
+import java.nio.file.Path;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+
 
 public class HTTP_Request {
     HttpClient client = HttpClient.newHttpClient();
     Gson gson = new Gson();
 
-    public String upload(File f){
+    public String upload(Path path,String api) throws Exception{
         
         transcriptAssemblyAI transcript = new transcriptAssemblyAI();
 
@@ -25,18 +30,18 @@ public class HTTP_Request {
         String json = gson.toJson(transcript);
 
         HttpRequest post = HttpRequest.newBuilder()
-        .uri(new URI("https://api.assemblyai.com/v2/tra"))
+        .uri(new URI(api))
         .header("Authorization",Key)
-        .header("Content-Type", "Application-Octet-Stream")
-        .POST(BodyPublishers.ofString(json))
+        .header("Content-Type", "application/octet-stream")
+        .POST(BodyPublishers.ofFile(path))
         .build();
-
-        
-
         HttpResponse<String> response = client.send(post, BodyHandlers.ofString());
-        System.out.println(response.body()+"\nID will probably be returned back to the method call");
-        transcript = gson.fromJson(response.body(), transcriptAssemblyAI.class);
-        return transcript.getId();
+        System.out.println(response.body());
+        JsonObject jsonObj = gson.fromJson(response.body(), JsonObject.class);
+        
+        System.out.println(response.body()+"\nURL will probably be returned back to the method call");
+        
+        return jsonObj.get("upload_url").getAsString();
 
     }
 
