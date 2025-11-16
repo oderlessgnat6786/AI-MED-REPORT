@@ -72,6 +72,6 @@ secrets/
 .gradle-cache/
 .build/
 audios/
-
+key.java
 # Keep this file consistent
 # ...existing code...
