@@ -1,8 +1,8 @@
 package med;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.http.HttpRequest;
 //The main class to run the application and display the output logs and results
 public class Main {
 
@@ -30,10 +30,11 @@ public class Main {
 
     
 
-    public static void main(String[] args) throws IOException {
-        System.out.println("Working dir: " + System.getProperty("user.dir"));
+    public static void main(String[] args) throws Exception {
+        /*System.out.println("Working dir: " + System.getProperty("user.dir"));
         System.out.println("Java home: " + System.getProperty("java.home"));
-        System.out.println("Java version: " + System.getProperty("java.version"));
+        System.out.println("Java version: " + System.getProperty("java.version"));*/
+
         System.out.println("Welcome to the Medical Report Application!");
         System.out.print("Please enter to start recording audio: ");
         BufferedReader rd = new BufferedReader(new InputStreamReader(System.in));
@@ -43,6 +44,17 @@ public class Main {
         f.getParentFile().mkdirs();
         f.createNewFile();
         recorder.startRecording(f,rd);
+
+        System.out.println("Press enter to send audio");
+        rd.readLine();
+        var http = new HTTP_Request();
+        String id = http.call(f.getAbsolutePath(), "te", "https://api.assemblyai.com/v2/transcript");
+
+        System.out.println("Press enter to get transcribed text");
+        rd.readLine();
+        String text = http.get(id, "https://api.assemblyai.com/v2/transcript");
+        System.out.println(text);
+        
         System.out.println("Method exited");
     }
 }
