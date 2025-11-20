@@ -18,7 +18,7 @@ import com.google.gson.JsonObject;
 
 public class HTTP_Request {
     HttpClient client = HttpClient.newHttpClient();
-    Gson gson = new Gson();
+    Gson gson = new Gson(); //yes i am testing
 
     public String upload(Path path,String api) throws Exception{
         
