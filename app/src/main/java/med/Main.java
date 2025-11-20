@@ -45,7 +45,6 @@ public class Main {
         System.out.println("Java version: " + System.getProperty("java.version"));*/
 
         System.out.println("Welcome to the Medical Report Application!");
-
         System.out.print("Please enter to start recording audio: ");
         BufferedReader rd = new BufferedReader(new InputStreamReader(System.in));
         String s = rd.readLine();
