@@ -111,9 +111,7 @@ public class HTTP_Request {
         json = gson.toJson(t);
 
         return json;
-    }
-
-    
+    }    
 
     public HashMap POST(URI url, HashMap<String,String> data,HashMap<String,String> headers,String[] returnList) throws Exception{
         
@@ -144,6 +142,93 @@ public class HTTP_Request {
                     break;
                 case "status":
                     returner.put(s, obj.getStatus());
+                    break;
+                default:
+                    returner.put(s, null);
+                    break;
+            }
+        }
+        return returner;
+    }
+
+    public HashMap POST(URI url,Path p, HashMap<String,String> headers,String[] returnList) throws Exception{
+        
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+            .uri(url)
+            .POST(BodyPublishers.ofFile(p));
+        
+        for (HashMap.Entry<String,String> i: headers.entrySet()){
+            builder.header(i.getKey(), i.getValue());
+        }
+        
+        HttpRequest request = builder.build();
+
+        HttpResponse<String> response = client.send(request,BodyHandlers.ofString());
+
+        if (response.statusCode() < 200 ||response.statusCode() >= 300) 
+            throw new RuntimeException("POST failed\nSTATUS CODE="+response.statusCode()+"\n"+response.body());
+
+        Transcript obj = gson.fromJson(response.body(),Transcript.class);
+        HashMap<String,String> returner = new HashMap<>();
+        for (String s: returnList){
+            switch (s) {
+                case "id":
+                    returner.put(s, obj.getId());
+                    break;
+                case "text":
+                    returner.put(s, obj.getText());
+                    break;
+                case "status":
+                    returner.put(s, obj.getStatus());
+                    break;
+                case "upload_url":
+                    returner.put(s, obj.getUpload_url());
+                    break;
+                default:
+                    returner.put(s, null);
+                    break;
+            }
+        }
+        return returner;
+    }
+
+    public HashMap GET(URI url, HashMap<String,String> headers,String[] returnList,String statusOK, String statusERROR) throws Exception{
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+            .uri(url)
+            .GET();
+        
+        for (HashMap.Entry<String,String> i: headers.entrySet()){
+            builder.header(i.getKey(), i.getValue());
+        }
+
+        HttpRequest request = builder.build();
+
+        Transcript obj;
+        while (true){
+            HttpResponse<String> response = client.send(request,BodyHandlers.ofString());
+            obj = gson.fromJson(response.body(),Transcript.class);
+            if (obj.getStatus().equals(statusOK))
+                break;
+            else if(obj.getStatus().equals(statusERROR)){
+                throw new RuntimeException("An error occured. Please review the API's history log for further details.\nID: "+obj.getId());
+            }
+            Thread.sleep(1000);
+        }
+
+        HashMap<String,String> returner = new HashMap<>();
+        for (String s: returnList){
+            switch(s){
+                case "id":
+                    returner.put(s, obj.getId());
+                    break;
+                case "text":
+                    returner.put(s, obj.getText());
+                    break;
+                case "status":
+                    returner.put(s, obj.getStatus());
+                    break;
+                case "upload_url":
+                    returner.put(s, obj.getUpload_url());
                     break;
                 default:
                     returner.put(s, null);

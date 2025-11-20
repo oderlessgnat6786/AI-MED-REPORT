@@ -1,4 +1,7 @@
 package med;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -29,7 +32,12 @@ public class Main {
 
     } // to be used at a later time */ 
 
-    
+    static void clipboard(String txt){
+        StringSelection sel = new StringSelection(txt);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(sel, null);
+        System.out.println("Successfully copied text");
+    }
 
     public static void main(String[] args) throws Exception {
         /*System.out.println("Working dir: " + System.getProperty("user.dir"));
@@ -46,8 +54,10 @@ public class Main {
         f.getParentFile().mkdirs();
         f.createNewFile();
         recorder.startRecording(f,rd);
-
-        
-
+        System.out.print("Press enter to continue: ");
+        rd.readLine();
+        AssemblyAiService transcribe = new AssemblyAiService();
+        String result = transcribe.run(f,"te");
+        clipboard(result);
     }
 }
