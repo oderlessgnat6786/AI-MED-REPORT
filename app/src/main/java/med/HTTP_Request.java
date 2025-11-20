@@ -2,6 +2,7 @@ package med;
 // This class will handle HTTP requests for the application
 
 import java.io.File;
+import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -10,6 +11,8 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.net.http.HttpResponse;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.util.HashMap;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -17,10 +20,10 @@ import com.google.gson.JsonObject;
 
 
 public class HTTP_Request {
-    HttpClient client = HttpClient.newHttpClient();
-    Gson gson = new Gson(); //yes i am testing
+    HttpClient client;;
+    Gson gson;; //yes i am testing
 
-    public String upload(Path path,String api) throws Exception{
+    /*public String upload(Path path,String api) throws Exception{
         
         transcriptAssemblyAI transcript = new transcriptAssemblyAI();
 
@@ -91,5 +94,34 @@ public class HTTP_Request {
         
         System.out.println("Transcription completed");
         return transcript.getText();
+    }*/
+
+    private String createJson(Transcript t,HashMap<String,String> data){
+        String json;
+        for (HashMap.Entry<String,String> i: data.entrySet()){
+            if (data.containsKey("audio_url")) t.setAudio_url(i.getValue());
+            if (data.containsKey("text")) t.setAudio_url(i.getValue()); //add more entries later
+        }
+        String obj = gson.toJson(t);
+
+        return json;
     }
+
+    HTTP_Request(Duration time){
+        this.client = HttpClient.newBuilder()
+            .connectTimeout(time)
+            .build();
+        this.gson = new Gson();
+    }
+
+    public <T> T POST(URI url, HashMap<String,String> data,String headers){
+        T result;
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(url)
+            .POST(BodyPublishers.ofString(createJson(data)))
+            .headers(headers)
+            .build();
+        return T;
+    }
+
 }

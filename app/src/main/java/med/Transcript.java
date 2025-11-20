@@ -1,6 +1,6 @@
 package med;
 
-public class transcriptAssemblyAI {
+public class Transcript {
     private String audio_url;
     private String language_code;
     private String id;
@@ -49,4 +49,6 @@ public class transcriptAssemblyAI {
         this.upload_url = upload_url;
     }
     
+
+
 }
