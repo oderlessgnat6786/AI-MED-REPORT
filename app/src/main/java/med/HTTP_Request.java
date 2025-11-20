@@ -21,8 +21,13 @@ import com.google.gson.JsonObject;
 
 public class HTTP_Request {
     HttpClient client;;
-    Gson gson;; //yes i am testing
-
+    Gson gson;;
+    HTTP_Request(Duration time){
+            this.client = HttpClient.newBuilder()
+                .connectTimeout(time)
+                .build();
+            this.gson = new Gson();
+        }
     /*public String upload(Path path,String api) throws Exception{
         
         transcriptAssemblyAI transcript = new transcriptAssemblyAI();
@@ -100,28 +105,52 @@ public class HTTP_Request {
         String json;
         for (HashMap.Entry<String,String> i: data.entrySet()){
             if (data.containsKey("audio_url")) t.setAudio_url(i.getValue());
-            if (data.containsKey("text")) t.setAudio_url(i.getValue()); //add more entries later
+            if (data.containsKey("language_code")) t.setAudio_url(i.getValue()); //add more entries later
+            if (data.containsKey("upload_url")) t.setAudio_url(i.getValue());
         }
-        String obj = gson.toJson(t);
+        json = gson.toJson(t);
 
         return json;
     }
 
-    HTTP_Request(Duration time){
-        this.client = HttpClient.newBuilder()
-            .connectTimeout(time)
-            .build();
-        this.gson = new Gson();
-    }
+    
 
-    public <T> T POST(URI url, HashMap<String,String> data,String headers){
-        T result;
-        HttpRequest request = HttpRequest.newBuilder()
+    public HashMap POST(URI url, HashMap<String,String> data,HashMap<String,String> headers,String[] returnList) throws Exception{
+        
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
             .uri(url)
-            .POST(BodyPublishers.ofString(createJson(data)))
-            .headers(headers)
-            .build();
-        return T;
+            .POST(BodyPublishers.ofString(createJson(new Transcript(),data)));
+        
+        for (HashMap.Entry<String,String> i: headers.entrySet()){
+            builder.header(i.getKey(), i.getValue());
+        }
+        
+        HttpRequest request = builder.build();
+
+        HttpResponse<String> response = client.send(request,BodyHandlers.ofString());
+
+        if (response.statusCode() < 200 ||response.statusCode() >= 300) 
+            throw new RuntimeException("POST failed\nSTATUS CODE="+response.statusCode()+"\n"+response.body());
+
+        Transcript obj = gson.fromJson(response.body(),Transcript.class);
+        HashMap<String,String> returner = new HashMap<>();
+        for (String s: returnList){
+            switch (s) {
+                case "id":
+                    returner.put(s, obj.getId());
+                    break;
+                case "text":
+                    returner.put(s, obj.getText());
+                    break;
+                case "status":
+                    returner.put(s, obj.getStatus());
+                    break;
+                default:
+                    returner.put(s, null);
+                    break;
+            }
+        }
+        return returner;
     }
 
 }

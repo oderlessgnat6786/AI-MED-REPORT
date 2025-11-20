@@ -37,6 +37,7 @@ public class Main {
         System.out.println("Java version: " + System.getProperty("java.version"));*/
 
         System.out.println("Welcome to the Medical Report Application!");
+
         System.out.print("Please enter to start recording audio: ");
         BufferedReader rd = new BufferedReader(new InputStreamReader(System.in));
         String s = rd.readLine();
@@ -46,22 +47,7 @@ public class Main {
         f.createNewFile();
         recorder.startRecording(f,rd);
 
-        System.out.println("Press enter to upload and send audio");
-        rd.readLine();
-
-        Path path = Path.of(f.getAbsolutePath());
-
-        HTTP_Request http = new HTTP_Request();
-        String url = http.upload(path, "https://api.assemblyai.com/v2/upload");
-
         
-        String id = http.call(url, "te", "https://api.assemblyai.com/v2/transcript");
 
-        System.out.println("Press enter to get transcribed text");
-        rd.readLine();
-        String text = http.get(id, "https://api.assemblyai.com/v2/transcript");
-        System.out.println(text);
-        
-        System.out.println("Method exited");
     }
 }
